@@ -1,6 +1,8 @@
 ﻿using College.Models;
 using College.Data;
 using Microsoft.EntityFrameworkCore;
+using College.DTO;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace College.Services
 {
@@ -13,44 +15,118 @@ namespace College.Services
             _collegeDbContext = collegeDbContext;
         }
 
-        public async Task<List<Student>> GetAllStudents()
+        public async Task<List<StudentDTO>> GetAllStudents()
         {
             try
             {
-                var students = await _collegeDbContext.Students.ToListAsync();
-                return students;
+                var students = await _collegeDbContext.Student.ToListAsync();
+                if (students is null)
+                    return null;
+                else
+                {
+                    var studentsDTO = students.Select(s => new StudentDTO
+                    {
+                        First_Name = s.First_Name,
+                        Last_Name = s.Last_Name,
+                        Semester = s.Semester,
+                    }).ToList();
+
+                    return studentsDTO;
+                }
             }
             catch (Exception ex)
             {
-                throw new NotImplementedException(ex.Message);
+                throw new Exception("Error retrieving all students : " + ex.Message);
             }
         }
 
-        public async Task<Student> GetStudentById(int id)
+        public async Task<StudentDetailDTO> GetStudentById(int id)
         {
             try
             {
-                var student = await _collegeDbContext.Students.FindAsync(id);
-                return student;
+                var student = await _collegeDbContext.Student
+                    .Include(s=>s.Department)
+                    .Include(s=>s.Courses)
+                    .FirstOrDefaultAsync(s=>s.Id == id);
+
+                if (student is null)
+                    return null;
+                else
+                {
+                    var studentDTO = new StudentDetailDTO
+                    {
+                        First_Name = student.First_Name,
+                        Last_Name = student.Last_Name,
+                        Semester = student.Semester,
+                        Department = new DepartmentDTO
+                        {
+                            Id = student.Department.Id,
+                            Title = student.Department.Title,
+                            Years = student.Department.Years,
+                        },
+                        Courses = student.Courses.Select(c => new CourseDTO
+                        {
+                            Id = c.Id,
+                            Title = c.Title,
+                            Hours = c.Hours
+                        }).ToList()
+                    };
+                    return studentDTO;
+                }
             }
             catch (Exception ex)
             {
-                throw new NotImplementedException(ex.Message);
+                throw new Exception($"Error retrieving student with id {id}: " + ex.Message);
             }
         }
 
-        public async Task<Student> CreateStudent(Student student)
+        public async Task<StudentDTO> CreateStudent(StudentDTO studentDTO)
         {
             try
             {
-                _collegeDbContext.Students.Add(student);
-                await _collegeDbContext.SaveChangesAsync();
+                if (studentDTO is null)
+                    return null;
+                else
+                {
+                    var student = new Student
+                    {
+                        First_Name = studentDTO.First_Name,
+                        Last_Name = studentDTO.Last_Name,
+                        Semester = studentDTO.Semester,
+                    };
 
-                return student;
+                    _collegeDbContext.Student.Add(student);
+                    await _collegeDbContext.SaveChangesAsync();
+
+                    return studentDTO;
+                }
             }
             catch (Exception ex)
             {
-                throw new NotImplementedException();
+                throw new Exception("Error creating new student : " + ex.Message);
+            }
+        }
+
+        public async Task<StudentDTO> UpdateStudent(int id, StudentDTO studentDTO)
+        {
+            try
+            {
+                var student = _collegeDbContext.Student.Find(id);
+                if (student is not null)
+                {
+                    student.First_Name = studentDTO.First_Name;
+                    student.Last_Name = studentDTO.Last_Name;
+                    student.Semester = studentDTO.Semester;
+
+                    await _collegeDbContext.SaveChangesAsync();
+                }
+
+                return studentDTO;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error updating student with id {id} : " + ex.Message);
             }
         }
 
@@ -58,10 +134,10 @@ namespace College.Services
         {
             try
             {
-                var student = await _collegeDbContext.Students.FindAsync(id);
+                var student = await _collegeDbContext.Student.FindAsync(id);
                 if (student != null)
                 {
-                    _collegeDbContext.Students.Remove(student);
+                    _collegeDbContext.Student.Remove(student);
                     await _collegeDbContext.SaveChangesAsync();
                     return true;
                 }
@@ -70,30 +146,60 @@ namespace College.Services
             }
             catch (Exception ex)
             {
-                throw new NotImplementedException(ex.Message);
+                throw new Exception("Error deleting student with id {id} : " + ex.Message);
             }
-        }                
+        }
 
-        public async Task<Student> UpdateStudent(int id, Student student)
+        public async Task<bool> AssignStudentToDepartment(int studentId, int departmentId)
         {
             try
             {
-                var _student = _collegeDbContext.Students.Find(id);
-                if(_student is not null)
-                {
-                    _student.First_Name = student.First_Name;
-                    _student.Last_Name = student.Last_Name;
-                    _student.Semester = student.Semester;
+                var student = await _collegeDbContext.Student.FindAsync(studentId);
 
-                    await _collegeDbContext.SaveChangesAsync();
-                }
+                if (student is null)
+                    throw new Exception($"Student with id {studentId} not found");
+ 
+                var department = _collegeDbContext.Department.Find(departmentId);
+
+                if (department is null)
+                    throw new Exception($"Department with id {departmentId} not found");
                 
-                return _student;
+                    student.Department = department;
+                    await _collegeDbContext.SaveChangesAsync();
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error assigning student with id {studentId} to department with id {departmentId} : " + ex.Message);
+            }
+        }
+
+        public async Task<bool> AssignStudentToCourse(int studentId, int courseId)
+        {
+            try
+            {
+                var student = await _collegeDbContext.Student
+                    .Include(s=>s.Department)
+                    .FirstOrDefaultAsync(s => s.Id == studentId);
+
+                var course = await _collegeDbContext.Course
+                    .Include(c => c.Department)
+                    .FirstOrDefaultAsync(c => c.Id == courseId);
+
+                if (student.Department.Id != course.Department.Id)
+                    return false;
+                else
+                {
+                    student.Courses.Add(course);
+                    await _collegeDbContext.SaveChangesAsync();
+                    return true;
+                }
 
             }catch(Exception ex)
             {
-                throw new NotImplementedException();
-            }            
+                throw new Exception($"Error assigning student with id {studentId} to course with id {courseId} : " + ex.Message);
+            }
         }
     }
 }

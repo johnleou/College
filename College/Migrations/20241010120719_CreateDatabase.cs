@@ -103,6 +103,7 @@ namespace College.Migrations
                 name: "IX_Students_DepartmentId",
                 table: "Students",
                 column: "DepartmentId");
+            
         }
 
         /// <inheritdoc />

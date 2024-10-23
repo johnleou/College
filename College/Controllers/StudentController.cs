@@ -1,8 +1,6 @@
-﻿using College.Data;
-using College.Services;
-using College.Models;
-using Microsoft.AspNetCore.Http;
+﻿using College.Services;
 using Microsoft.AspNetCore.Mvc;
+using College.DTO;
 
 namespace College.Controllers
 {
@@ -12,13 +10,20 @@ namespace College.Controllers
     {
         private readonly IStudentService _studentService;
 
+        /// <summary>
+        /// Constructor for Student Controller
+        /// </summary>
+        /// <param name="studentService"></param>
         public StudentController(IStudentService studentService)
         {
             _studentService = studentService;
         }
 
+        /// <summary>
+        /// Get a list of students
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        [Route("")]
         public async Task<IActionResult> GetAllStudents()
         {
             try
@@ -32,6 +37,11 @@ namespace College.Controllers
             }
         }
 
+        /// <summary>
+        /// Get student by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetStudentById(int id)
@@ -47,13 +57,17 @@ namespace College.Controllers
             }
         }
 
+        /// <summary>
+        /// Create new student
+        /// </summary>
+        /// <param name="studentDTO"></param>
+        /// <returns></returns>
         [HttpPost]
-        [Route("")]
-        public async Task<IActionResult> CreateStudent(Student student)
+        public async Task<IActionResult> CreateStudent(StudentDTO studentDTO)
         {
             try
             {
-                var new_student = await _studentService.CreateStudent(student);
+                var new_student = await _studentService.CreateStudent(studentDTO);
                 return Ok(new_student);
             }
             catch (Exception ex)
@@ -62,14 +76,19 @@ namespace College.Controllers
             }
         }
 
+        /// <summary>
+        /// Update student by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="studentDTO"></param>
+        /// <returns></returns>
         [HttpPut]
-        [Route("")]
-        public async Task<IActionResult> UpdateStudent(int id, Student student)
+        public async Task<IActionResult> UpdateStudent(int id, [FromBody] StudentDTO studentDTO)
         {
             try
             {
-                await _studentService.UpdateStudent(id, student);
-                return Ok(student);
+                await _studentService.UpdateStudent(id, studentDTO);
+                return Ok(studentDTO);
             }
             catch (Exception ex)
             {
@@ -77,8 +96,12 @@ namespace College.Controllers
             }
         }
 
+        /// <summary>
+        /// Delete student by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
-        [Route("{id}")]
         public async Task<IActionResult> DeleteStudent(int id)
         {
             try
@@ -90,7 +113,34 @@ namespace College.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
 
+        /// <summary>
+        /// Assign student to department
+        /// </summary>
+        /// <param name="studentId"></param>
+        /// <param name="departmentId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("assignStudentToDepartment")]
+        public async Task<IActionResult> AssignStudentToDepartment([FromQuery] int studentId, int departmentId)
+        {
+            bool result = await _studentService.AssignStudentToDepartment(studentId, departmentId);
+            if (result is true)
+                return Ok();
+            else
+                return BadRequest();
+        }
+
+        [HttpPost]
+        [Route("assignStudentToCourse")]
+        public async Task<IActionResult> AssignStudentToCourse(int studentId, int courseId)
+        {
+            bool result = await _studentService.AssignStudentToCourse(studentId, courseId);
+            if (result is true)
+                return Ok();
+            else
+                return BadRequest();
         }
     }
 }

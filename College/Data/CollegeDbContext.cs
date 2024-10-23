@@ -11,7 +11,7 @@ namespace College.Data
         }
 
         public DbSet<Department> Department { get; set; }
-        public DbSet<Student> Students { get; set; }
-        public DbSet<Course> Courses { get; set; }
+        public DbSet<Student> Student { get; set; }
+        public DbSet<Course> Course { get; set; }
     }
 }

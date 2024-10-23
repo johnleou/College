@@ -11,15 +11,22 @@ namespace College.Controllers
     [ApiController]
     public class DepartmentController : ControllerBase
     {
-        private readonly IDepartmentService _departmentService;
-        private readonly CollegeDbContext _collegeDbContext;
+        private readonly IDepartmentService _departmentService;        
 
+        /// <summary>
+        /// Constructor for Department Controller
+        /// </summary>
+        /// <param name="departmentService"></param>
+        /// <param name="collegeDbContext"></param>
         public DepartmentController(IDepartmentService departmentService, CollegeDbContext collegeDbContext)
         {
-            _departmentService = departmentService;
-            _collegeDbContext = collegeDbContext;
+            _departmentService = departmentService;            
         }           
 
+        /// <summary>
+        /// Get a list of departments
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("")]
         public async Task<IActionResult> GetAllDepartments()
@@ -36,6 +43,11 @@ namespace College.Controllers
 
         }
 
+        /// <summary>
+        /// Get department by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetDepartmentById(int id)
@@ -52,6 +64,11 @@ namespace College.Controllers
 
         }
 
+        /// <summary>
+        /// Create new department
+        /// </summary>
+        /// <param name="department"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("")]
         public async Task<IActionResult> CreateDepartment([FromBody] DepartmentDTO department)
@@ -72,6 +89,12 @@ namespace College.Controllers
             }
         }
 
+        /// <summary>
+        /// Update department by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="department"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> UpdateDepartment(int id, [FromBody] DepartmentDTO department)
@@ -93,6 +116,11 @@ namespace College.Controllers
 
         }
 
+        /// <summary>
+        /// Delete department by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> DeleteDepartmentById(int id)

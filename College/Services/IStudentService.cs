@@ -1,13 +1,16 @@
-﻿using College.Models;
+﻿using College.DTO;
+using College.Models;
 
 namespace College.Services
 {
     public interface IStudentService
     {
-        public Task<List<Student>> GetAllStudents(); 
-        public Task<Student> GetStudentById(int id);
-        public Task<Student> CreateStudent(Student student);
-        public Task<Student> UpdateStudent(int id, Student student);
+        public Task<List<StudentDTO>> GetAllStudents(); 
+        public Task<StudentDetailDTO> GetStudentById(int id);
+        public Task<StudentDTO> CreateStudent(StudentDTO studentDTO);
+        public Task<StudentDTO> UpdateStudent(int id, StudentDTO studentDTO);
         public Task<bool> DeleteStudent(int id);
+        public Task<bool> AssignStudentToDepartment(int studentId, int departmentId);
+        public Task<bool> AssignStudentToCourse(int studentId, int departmentId);
     }
 }

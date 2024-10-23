@@ -92,15 +92,14 @@ namespace College.Services
                 await _collegeDbContext.SaveChangesAsync();
 
                 return new DepartmentDTO
-                {
-                    Id = new_department.Id,
+                {                    
                     Title = new_department.Title,
                     Years = new_department.Years
                 };
             }
             catch (Exception ex)
             {
-                throw new Exception("Error creating department" + ex.Message);
+                throw new Exception("Error creating department : " + ex.Message);
             }
 
         }
@@ -118,8 +117,7 @@ namespace College.Services
                     await _collegeDbContext.SaveChangesAsync();
 
                     var updated_department = new DepartmentDTO
-                    {
-                        Id = department.Id,
+                    {                        
                         Title = department.Title,
                         Years = department.Years
                     };
