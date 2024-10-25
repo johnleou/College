@@ -27,7 +27,17 @@ builder.Services.AddDbContext<CollegeDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
-    
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorWASM", policy =>
+    {
+        policy.WithOrigins("https://localhost:7264") // The URL of your Blazor app
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -38,6 +48,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowBlazorWASM");
 
 app.UseAuthorization();
 

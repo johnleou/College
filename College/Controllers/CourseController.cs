@@ -23,7 +23,7 @@ namespace College.Controllers
         /// Get a list of courses
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("courses")]
         public async Task<IActionResult> GetAllCourses()
         {
             try
@@ -42,7 +42,7 @@ namespace College.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
+        [HttpGet("courses/{id}")]
         public async Task<IActionResult> GetCourseById(int id)
         {
             try
@@ -61,7 +61,7 @@ namespace College.Controllers
         /// </summary>
         /// <param name="courseDTO"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("courses")]
         public async Task<IActionResult> CreateCourse(CourseDTO courseDTO)
         {
             try
@@ -81,7 +81,7 @@ namespace College.Controllers
         /// <param name="id"></param>
         /// <param name="courseDTO"></param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPut("courses/{id}")]
         public async Task<IActionResult> UpdateCourse(int id, [FromBody] CourseDTO courseDTO)
         {
             try
@@ -100,7 +100,7 @@ namespace College.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
+        [HttpDelete("courses/{id}")]
         public async Task<IActionResult> DeleteStudent(int id)
         {
             try

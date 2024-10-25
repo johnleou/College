@@ -23,7 +23,7 @@ namespace College.Controllers
         /// Get a list of students
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("students")]
         public async Task<IActionResult> GetAllStudents()
         {
             try
@@ -42,8 +42,7 @@ namespace College.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("students/{id}")]
         public async Task<IActionResult> GetStudentById(int id)
         {
             try
@@ -62,7 +61,7 @@ namespace College.Controllers
         /// </summary>
         /// <param name="studentDTO"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("students")]
         public async Task<IActionResult> CreateStudent(StudentDTO studentDTO)
         {
             try
@@ -82,7 +81,7 @@ namespace College.Controllers
         /// <param name="id"></param>
         /// <param name="studentDTO"></param>
         /// <returns></returns>
-        [HttpPut]
+        [HttpPut("students/{id}")]
         public async Task<IActionResult> UpdateStudent(int id, [FromBody] StudentDTO studentDTO)
         {
             try
@@ -101,7 +100,7 @@ namespace College.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete]
+        [HttpDelete("students/{id}")]
         public async Task<IActionResult> DeleteStudent(int id)
         {
             try
@@ -121,8 +120,7 @@ namespace College.Controllers
         /// <param name="studentId"></param>
         /// <param name="departmentId"></param>
         /// <returns></returns>
-        [HttpPost]
-        [Route("assignStudentToDepartment")]
+        [HttpPost("assignStudentToDepartment")]
         public async Task<IActionResult> AssignStudentToDepartment([FromQuery] int studentId, int departmentId)
         {
             bool result = await _studentService.AssignStudentToDepartment(studentId, departmentId);
@@ -132,8 +130,13 @@ namespace College.Controllers
                 return BadRequest();
         }
 
-        [HttpPost]
-        [Route("assignStudentToCourse")]
+        /// <summary>
+        /// Assign course to department
+        /// </summary>
+        /// <param name="studentId"></param>
+        /// <param name="courseId"></param>
+        /// <returns></returns>
+        [HttpPost("assignStudentToCourse")]
         public async Task<IActionResult> AssignStudentToCourse(int studentId, int courseId)
         {
             bool result = await _studentService.AssignStudentToCourse(studentId, courseId);

@@ -27,8 +27,7 @@ namespace College.Controllers
         /// Get a list of departments
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        [Route("")]
+        [HttpGet("department")]
         public async Task<IActionResult> GetAllDepartments()
         {
             try
@@ -48,8 +47,7 @@ namespace College.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("department/{id}")]
         public async Task<IActionResult> GetDepartmentById(int id)
         {
             try
@@ -69,8 +67,7 @@ namespace College.Controllers
         /// </summary>
         /// <param name="department"></param>
         /// <returns></returns>
-        [HttpPost]
-        [Route("")]
+        [HttpPost("department")]
         public async Task<IActionResult> CreateDepartment([FromBody] DepartmentDTO department)
         {
 
@@ -95,8 +92,7 @@ namespace College.Controllers
         /// <param name="id"></param>
         /// <param name="department"></param>
         /// <returns></returns>
-        [HttpPut]
-        [Route("{id}")]
+        [HttpPut("department/{id}")]
         public async Task<IActionResult> UpdateDepartment(int id, [FromBody] DepartmentDTO department)
         {
             if (!ModelState.IsValid)
@@ -121,8 +117,7 @@ namespace College.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete]
-        [Route("{id}")]
+        [HttpDelete("deparment/{id}")]
         public async Task<IActionResult> DeleteDepartmentById(int id)
         {
             try

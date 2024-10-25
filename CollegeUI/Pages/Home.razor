@@ -1,0 +1,31 @@
+﻿@page "/"
+
+@using CollegeUI.Services;
+@using Shared.DTO
+@inject DepartmentService DepartmentService
+
+
+@if (department is not null)
+{
+    <div>
+        <h4>@department.Title</h4>
+        <h4>@department.Title</h4>
+    </div>
+}
+else
+{
+    <p>Department is null</p>
+}
+
+
+
+@code {
+    public DepartmentDetailDTO department;
+
+    protected override async Task OnInitializedAsync()
+    {
+        int departmentId = 1;
+        department = await DepartmentService.GetDepartmentById(departmentId);
+    }
+
+}
