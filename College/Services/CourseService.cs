@@ -1,5 +1,5 @@
 ﻿using College.Data;
-using College.DTO;
+using Shared.DTO;
 using College.Models;
 using Microsoft.EntityFrameworkCore;
 

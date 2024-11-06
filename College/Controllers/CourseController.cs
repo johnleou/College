@@ -1,10 +1,10 @@
-﻿using College.DTO;
+﻿using Shared.DTO;
 using College.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace College.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api")]
     [ApiController]
     public class CourseController : ControllerBase
     {

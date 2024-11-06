@@ -1,5 +1,4 @@
-﻿using College.DTO;
-using College.Models;
+﻿using Shared.DTO;
 
 namespace College.Services
 {

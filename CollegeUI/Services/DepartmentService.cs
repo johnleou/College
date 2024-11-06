@@ -16,5 +16,10 @@ namespace CollegeUI.Services
         {
             return await _httpClient.GetFromJsonAsync<DepartmentDetailDTO>($"department/{id}");
         }
+
+        public async Task<List<DepartmentDTO>> GetAllDepartments()
+        {
+            return await _httpClient.GetFromJsonAsync<List<DepartmentDTO>>($"department");
+        }
     }
 }

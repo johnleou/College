@@ -1,10 +1,10 @@
 ﻿using College.Services;
 using Microsoft.AspNetCore.Mvc;
-using College.DTO;
+using Shared.DTO;
 
 namespace College.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api")]
     [ApiController]
     public class StudentController : ControllerBase
     {
@@ -42,7 +42,7 @@ namespace College.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("students/{id}")]
+        [HttpGet("student/{id}")]
         public async Task<IActionResult> GetStudentById(int id)
         {
             try

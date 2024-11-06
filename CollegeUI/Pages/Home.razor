@@ -1,31 +1,30 @@
 ﻿@page "/"
 
 @using CollegeUI.Services;
-@using Shared.DTO
+@using Shared.DTO;
 @inject DepartmentService DepartmentService
 
-
-@if (department is not null)
-{
-    <div>
-        <h4>@department.Title</h4>
-        <h4>@department.Title</h4>
-    </div>
-}
-else
-{
-    <p>Department is null</p>
-}
-
-
+<RadzenCard class="rz-mb-4">
+    <RadzenDataGrid TItem="DepartmentDetailDTO" Data="@selectedDepartment" AllowPaging="true" ColumnWidth="150px">
+        <Columns>
+            <RadzenDataGridColumn Title="ID" Property="Id" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+            <RadzenDataGridColumn Title="Title" Property="Title"></RadzenDataGridColumn>
+            <RadzenDataGridColumn Title="Years" Property="Years"></RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+</RadzenCard>
 
 @code {
-    public DepartmentDetailDTO department;
+    DepartmentDetailDTO department = new();
+    List<DepartmentDetailDTO> selectedDepartment = new();
+    List<DepartmentDTO> departments = new();
 
     protected override async Task OnInitializedAsync()
     {
-        int departmentId = 1;
+        int departmentId = 1;                
         department = await DepartmentService.GetDepartmentById(departmentId);
+        departments = await DepartmentService.GetAllDepartments();
+        selectedDepartment = new List<DepartmentDetailDTO> { department };
     }
 
 }

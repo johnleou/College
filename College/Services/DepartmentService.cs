@@ -1,10 +1,7 @@
 ﻿using College.Data;
 using College.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http.HttpResults;
-using College.DTO;
-using System.Linq;
+using Shared.DTO;
 
 namespace College.Services
 {

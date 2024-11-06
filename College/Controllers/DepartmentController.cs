@@ -1,5 +1,5 @@
 ﻿using College.Data;
-using College.DTO;
+using Shared.DTO;
 using College.Models;
 using College.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace College.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api")]
     [ApiController]
     public class DepartmentController : ControllerBase
     {
