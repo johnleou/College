@@ -1,0 +1,28 @@
+﻿@page "/"
+
+@using CollegeUI.Services;
+@using Shared.DTO;
+@inject StudentService StudentService
+
+<PageTitle>Students</PageTitle>
+
+<RadzenCard class="rz-mb-3">
+    <RadzenDataGrid TItem="StudentDTO" Data="@students" AllowPaging="true" ColumnWidth="150px">
+        <Columns>            
+            <RadzenDataGridColumn Title="First Name" Property="First_Name" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+            <RadzenDataGridColumn Title="Last Name" Property="Last_Name" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+            <RadzenDataGridColumn Title="Semester" Property="Semester" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+</RadzenCard>
+
+@code {
+
+    List<StudentDTO> students = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        students = await StudentService.GetAllStudents();
+    }
+
+}

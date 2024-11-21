@@ -1,0 +1,26 @@
+﻿@page "/departments"
+
+@using CollegeUI.Services
+@using Shared.DTO
+@inject DepartmentService DepartmentService;
+
+<PageTitle>Departments</PageTitle>
+
+<RadzenCard class="rz-mb-2">
+    <RadzenDataGrid TItem="DepartmentDTO" Data="@departments" AllowPaging="true" ColumnWidth="150px">
+        <Columns>
+            <RadzenDataGridColumn Title="Title" Property="Title" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+            <RadzenDataGridColumn Title="Years" Property="Years" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+</RadzenCard>
+
+@code {
+    List<DepartmentDTO> departments = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        departments = await DepartmentService.GetAllDepartments();
+    }
+}
+

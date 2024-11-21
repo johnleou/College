@@ -1,0 +1,25 @@
+﻿@page "/courses"
+@using CollegeUI.Services;
+@using Shared.DTO;
+@inject CourseService CourseService;
+
+<PageTitle>Courses</PageTitle>
+
+<RadzenCard class="rz-mb-2">
+    <RadzenDataGrid TItem="CourseDTO" Data="@courses" AllowPaging="true" ColumnWidth="150px">
+        <Columns>
+            <RadzenDataGridColumn Title="Title" Property="Title" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+            <RadzenDataGridColumn Title="Hours" Property="Hours" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+</RadzenCard>
+
+@code {
+
+    List<CourseDTO> courses = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        courses = await CourseService.GetAllCourses();
+    }
+}
