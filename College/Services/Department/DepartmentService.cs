@@ -8,12 +8,20 @@ namespace College.Services
     public class DepartmentService : IDepartmentService
     {
         private readonly CollegeDbContext _collegeDbContext;
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="collegeDbContext"></param>
         public DepartmentService(CollegeDbContext collegeDbContext)
         {
             _collegeDbContext = collegeDbContext;
         }
 
+        /// <summary>
+        /// Get all departments
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task<List<DepartmentDTO>> GetAllDepartments()
         {
             try
@@ -25,6 +33,7 @@ namespace College.Services
 
                 var departmentsDTO = departments.Select(d => new DepartmentDTO
                 {
+                    Id = d.Id,
                     Title = d.Title,
                     Years = d.Years
                 }).ToList();
@@ -33,10 +42,15 @@ namespace College.Services
             }
             catch (Exception ex)
             {
-                throw new NotImplementedException(ex.Message);
+                throw new Exception(ex.Message);
             }
         }
-
+        /// <summary>
+        /// Get department by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task<DepartmentDetailDTO> GetDepartmentById(int id)
         {
             try
@@ -67,14 +81,19 @@ namespace College.Services
                 };
 
                 return departmentDTO;
-
             }
             catch (Exception ex)
             {
-                throw new NotImplementedException(ex.Message);
+                throw new Exception(ex.Message);
             }
         }
 
+        /// <summary>
+        /// Create department
+        /// </summary>
+        /// <param name="department"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task<DepartmentDTO> CreateDepartment(DepartmentDTO department)
         {
             try
@@ -89,7 +108,7 @@ namespace College.Services
                 await _collegeDbContext.SaveChangesAsync();
 
                 return new DepartmentDTO
-                {                    
+                {
                     Title = new_department.Title,
                     Years = new_department.Years
                 };
@@ -101,12 +120,21 @@ namespace College.Services
 
         }
 
+        /// <summary>
+        /// Update department
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="departmentDTO"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task<DepartmentDTO> UpdateDepartment(int id, DepartmentDTO departmentDTO)
         {
             try
             {
                 var department = await _collegeDbContext.Department.FindAsync(id);
-                if (departmentDTO is not null)
+                if (department is null)
+                    return null;
+                else
                 {
                     department.Title = departmentDTO.Title;
                     department.Years = departmentDTO.Years;
@@ -114,14 +142,12 @@ namespace College.Services
                     await _collegeDbContext.SaveChangesAsync();
 
                     var updated_department = new DepartmentDTO
-                    {                        
+                    {
                         Title = department.Title,
                         Years = department.Years
                     };
                     return updated_department;
                 }
-                else
-                    return null;
 
             }
             catch (Exception ex)
@@ -130,18 +156,26 @@ namespace College.Services
             }
         }
 
+        /// <summary>
+        /// Delete department
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task<bool> DeleteDepartment(int id)
         {
             try
             {
                 var department = await _collegeDbContext.Department.FindAsync(id);
-
-                
+                if (department is null)
+                    return false;
+                else
+                {
                     _collegeDbContext.Department.Remove(department);
                     await _collegeDbContext.SaveChangesAsync();
 
                     return true;
-                
+                }                
             }
             catch (Exception ex)
             {

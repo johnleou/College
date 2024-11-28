@@ -2,11 +2,14 @@
 
 @using CollegeUI.Services;
 @using Shared.DTO;
+@inject NavigationManager Navigation
 @inject StudentService StudentService
 
 <PageTitle>Students</PageTitle>
 
 <RadzenCard class="rz-mb-3">
+    <RadzenNumeric @bind-Value=@studentId ShowUpDown="false" Placeholder="Search student by Id" />
+    <RadzenButton Text="Search Student by Id" Click="SearchStudentById" />
     <RadzenDataGrid TItem="StudentDTO" Data="@students" AllowPaging="true" ColumnWidth="150px">
         <Columns>            
             <RadzenDataGridColumn Title="First Name" Property="First_Name" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
@@ -17,8 +20,13 @@
 </RadzenCard>
 
 @code {
-
+    private int studentId;
     List<StudentDTO> students = new();
+
+    public void SearchStudentById()
+    {
+         Navigation.NavigateTo($"/student/{studentId}");
+    }
 
     protected override async Task OnInitializedAsync()
     {

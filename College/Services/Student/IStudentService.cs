@@ -4,7 +4,7 @@ namespace College.Services
 {
     public interface IStudentService
     {
-        public Task<List<StudentDTO>> GetAllStudents(); 
+        public Task<List<StudentDTO>> GetAllStudents();
         public Task<StudentDetailDTO> GetStudentById(int id);
         public Task<StudentDTO> CreateStudent(StudentDTO studentDTO);
         public Task<StudentDTO> UpdateStudent(int id, StudentDTO studentDTO);

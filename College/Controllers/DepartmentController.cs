@@ -1,9 +1,9 @@
 ﻿using College.Data;
 using Shared.DTO;
 using College.Models;
-using College.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using College.Services;
 
 namespace College.Controllers
 {
@@ -27,7 +27,7 @@ namespace College.Controllers
         /// Get a list of departments
         /// </summary>
         /// <returns></returns>
-        [HttpGet("department")]
+        [HttpGet("departments")]
         public async Task<IActionResult> GetAllDepartments()
         {
             try
@@ -123,7 +123,10 @@ namespace College.Controllers
             try
             {
                 bool deleteDepartment = await _departmentService.DeleteDepartment(id);
-                return Ok(deleteDepartment);
+                if(deleteDepartment)
+                    return Ok($"Deleting department with id {id} has been made succesfully!");
+                else
+                    return NotFound($"Error! Department with id {id} not found");
             }
             catch (Exception ex)
             {

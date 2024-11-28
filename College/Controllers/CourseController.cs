@@ -105,8 +105,11 @@ namespace College.Controllers
         {
             try
             {
-                await _courseService.DeleteCourse(id);
-                return Ok();
+                var course = await _courseService.DeleteCourse(id);
+                if(course)
+                    return Ok("Assigninig has been made succesfully");
+                else 
+                    return NotFound($"Id {id} not found");
             }
             catch (Exception ex)
             {
@@ -124,11 +127,8 @@ namespace College.Controllers
         [Route("assignCourseToDepartment")]
         public async Task<IActionResult> AssignCourseToDepartment([FromQuery] int courseId, int departmentId)
         {
-            bool result = await _courseService.AssignCourseToDepartment(courseId, departmentId);
-            if (result is true)
-                return Ok();
-            else
-                return BadRequest();
+            await _courseService.AssignCourseToDepartment(courseId, departmentId);            
+            return Ok("Assigning has been made succesfully!");            
         }
     }
 }

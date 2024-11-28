@@ -1,0 +1,66 @@
+﻿@page "/student"
+@page "/student/{id}"
+
+@using CollegeUI.Services
+@using Shared.DTO
+@inject StudentService StudentService
+@inject NavigationManager Navigation
+
+<RadzenCard class="rz-mb-4">
+    @if (selectedStudent.Count > 0)
+    {
+        <RadzenDataGrid TItem="StudentDetailDTO" Data="@selectedStudent" AllowPaging="true" ColumnWidth="150px">
+            <Columns>
+                <RadzenDataGridColumn Title="Id" Property="Id" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+                <RadzenDataGridColumn Title="First Name" Property="First_Name" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+                <RadzenDataGridColumn Title="Last Name" Property="Last_Name" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+                <RadzenDataGridColumn Title="Semester" Property="Semester" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+                <RadzenDataGridColumn Title="Department" Property="Department.Title" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+                <RadzenDataGridColumn Title="Courses" Property="Courses.Title" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+    else
+    {
+        <RadzenText>There is no student with such id</RadzenText>
+    }
+    <RadzenStack AlignItems="AlignItems.End">
+        <RadzenButton Text="Back" Click="NavigateToStudents" />
+    </RadzenStack>
+</RadzenCard>
+
+@code {
+
+    [Parameter]
+    public string? id { get; set; }
+    private int studentId;
+    private string? errorMessage;
+
+    List<StudentDetailDTO> selectedStudent = new();
+    StudentDetailDTO student = new();
+
+    public void NavigateToStudents()
+    {
+        Navigation.NavigateTo("");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (int.TryParse(id, out studentId))
+        {
+            try
+            {
+                student = await StudentService.GetStudentById(studentId);
+                if (student is not null)
+                {
+                    selectedStudent.Add(student);
+
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                errorMessage = ex.Message;
+            }
+        }
+    }
+}

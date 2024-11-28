@@ -45,15 +45,11 @@ namespace College.Controllers
         [HttpGet("student/{id}")]
         public async Task<IActionResult> GetStudentById(int id)
         {
-            try
-            {
-                var student = await _studentService.GetStudentById(id);
+            var student = await _studentService.GetStudentById(id);
+            if (student is not null)
                 return Ok(student);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            else
+                return NotFound($"There is no student with id: {id}");
         }
 
         /// <summary>
@@ -62,17 +58,10 @@ namespace College.Controllers
         /// <param name="studentDTO"></param>
         /// <returns></returns>
         [HttpPost("students")]
-        public async Task<IActionResult> CreateStudent(StudentDTO studentDTO)
-        {
-            try
-            {
-                var new_student = await _studentService.CreateStudent(studentDTO);
-                return Ok(new_student);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+        public async Task<IActionResult> CreateStudent([FromBody] StudentDTO studentDTO)
+        {            
+            var new_student = await _studentService.CreateStudent(studentDTO);
+            return Ok(new_student);
         }
 
         /// <summary>
@@ -106,7 +95,10 @@ namespace College.Controllers
             try
             {
                 var student = await _studentService.DeleteStudent(id);
-                return Ok(student);
+                if (student)
+                    return Ok(student);
+                else
+                    return NotFound($"Id {id} not found"); ;
             }
             catch (Exception ex)
             {
@@ -125,9 +117,9 @@ namespace College.Controllers
         {
             bool result = await _studentService.AssignStudentToDepartment(studentId, departmentId);
             if (result is true)
-                return Ok();
+                return Ok("Assigning has been made succesfully!");
             else
-                return BadRequest();
+                return BadRequest("Student or department not found");
         }
 
         /// <summary>
@@ -140,10 +132,10 @@ namespace College.Controllers
         public async Task<IActionResult> AssignStudentToCourse(int studentId, int courseId)
         {
             bool result = await _studentService.AssignStudentToCourse(studentId, courseId);
-            if (result is true)
-                return Ok();
+            if (result)
+                return Ok("Assigning has been made succesfully!");
             else
-                return BadRequest();
+                return BadRequest("Error by assigning student to course!");
         }
     }
 }
