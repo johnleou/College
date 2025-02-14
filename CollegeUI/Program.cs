@@ -11,6 +11,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri("https://localhost:7137/api/"),
+    Timeout = new TimeSpan(0,0,30)
 });
 
 builder.Services.AddScoped<DepartmentService>();

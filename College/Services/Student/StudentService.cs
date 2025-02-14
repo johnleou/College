@@ -3,6 +3,7 @@ using College.Data;
 using Microsoft.EntityFrameworkCore;
 using Shared.DTO;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Newtonsoft.Json;
 
 namespace College.Services
 {
@@ -103,14 +104,24 @@ namespace College.Services
         /// <exception cref="Exception"></exception>
         public async Task<StudentDTO> CreateStudent(StudentDTO studentDTO)
         {
+            JsonSerializerSettings jsonSettingsError = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
             try
             {
-                var student = new Models.Student
+                
+                var student = new Student
                 {
                     First_Name = studentDTO.First_Name,
                     Last_Name = studentDTO.Last_Name,
                     Semester = studentDTO.Semester,
                 };
+
+                var studentJson = JsonConvert.SerializeObject(studentDTO, jsonSettingsError);
+                Console.WriteLine(studentJson);
+                student = JsonConvert.DeserializeObject<Student>(studentJson, jsonSettingsError);
 
                 _collegeDbContext.Student.Add(student);
                 await _collegeDbContext.SaveChangesAsync();

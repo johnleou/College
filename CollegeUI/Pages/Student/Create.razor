@@ -1,0 +1,50 @@
+﻿@page "/create"
+@using CollegeUI.Services
+@using Shared.DTO
+
+@inject NavigationManager Navigation
+@inject StudentService StudentService
+
+<h3>Create new student</h3>
+
+<RadzenStack Style="height: 60px; width: 500px;">
+    <div style="width: 300px;">
+        <RadzenLabel Text="First Name" />
+        <RadzenTextBox @bind-Value="@fName" Name="FirstName" Placeholder="First Name" />
+        <RadzenDataAnnotationValidator Component="FirstName" Popup=@true Style="position: absolute" />
+    </div>
+</RadzenStack>
+<RadzenStack Style="height: 60px; width: 250px;">
+    <div style="width: 300px;">
+        <RadzenLabel Text="Last Name" />
+        <RadzenTextBox @bind-Value="@lName" Name="LastName" Placeholder="Last Name" />
+        <RadzenDataAnnotationValidator Component="LastName" Popup=@false Style="position: absolute" />
+    </div>
+</RadzenStack>
+<RadzenStack Style="height: 60px; width: 250px;">
+    <div style="width: 300px;">
+        <RadzenLabel Text="Semester" />
+        <RadzenNumeric @bind-Value="@semester" Name="Semester" Placeholder="Semester" />
+        <RadzenDataAnnotationValidator Component="Semester" Popup=@true Style="position: absolute" />
+    </div>
+</RadzenStack>
+<RadzenStack>
+    <RadzenButton Text="Submit" ButtonStyle="ButtonStyle.Success" Style="width:100px" Click="OnSubmit" />
+</RadzenStack>
+
+@code {
+
+    private string fName { get; set; }
+    private string lName { get; set; }
+    private int semester { get; set; }
+
+    public void OnSubmit()
+    {
+        StudentDTO studentDTO = new();
+        studentDTO.First_Name = fName;
+        studentDTO.Last_Name = lName;
+        studentDTO.Semester = semester;
+        StudentService.CreateStudent(studentDTO);
+        Navigation.NavigateTo("/");
+    }
+}

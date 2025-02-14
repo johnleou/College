@@ -1,5 +1,6 @@
 using College.Data;
 using College.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
@@ -18,6 +19,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie();
 
 //Connection to database
 var connectionString = builder.Configuration.GetConnectionString("CollegeConnection");
@@ -49,6 +53,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowBlazorWASM");
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

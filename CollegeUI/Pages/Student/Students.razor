@@ -7,30 +7,115 @@
 
 <PageTitle>Students</PageTitle>
 
+<RadzenText TextStyle="TextStyle.DisplayH6" Text="List of Students" Style="text-align:center" />
 <RadzenCard class="rz-mb-3">
-    <RadzenNumeric @bind-Value=@studentId ShowUpDown="false" Placeholder="Search student by Id" />
-    <RadzenButton Text="Search Student by Id" Click="SearchStudentById" />
-    <RadzenDataGrid TItem="StudentDTO" Data="@students" AllowPaging="true" ColumnWidth="150px">
-        <Columns>            
-            <RadzenDataGridColumn Title="First Name" Property="First_Name" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
-            <RadzenDataGridColumn Title="Last Name" Property="Last_Name" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
-            <RadzenDataGridColumn Title="Semester" Property="Semester" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+    <RadzenNumeric @bind-Value=@studentId Min="1" ShowUpDown="false" Placeholder="Search student by Id" Style="margin-bottom:5px" />
+    <RadzenButton Text="Search Student by Id" Click="SearchStudentById" Style="margin-bottom:5px" />
+    <RadzenButton Style="text-align:right" ButtonStyle="ButtonStyle.Success" Icon="add_circle" Click=@(args=>AddNewStudent()) />
+    <RadzenDataGrid @ref=grid TItem="StudentDTO" Data="@students" AllowPaging="true" ColumnWidth="150px">
+        <HeaderTemplate>
+            <RadzenText TextStyle="TextStyle.DisplayH6" Text="List of Students" Style="text-align:center" />
+        </HeaderTemplate>
+        <Columns>
+            <RadzenDataGridColumn Title="Id" Property="Id" TextAlign="TextAlign.Center">
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Title="First Name" Property="First_Name" TextAlign="TextAlign.Center">
+                <EditTemplate Context="context">
+                    <RadzenTextBox @bind-Value="context.First_Name" Placeholder="Enter First Name..." Name="firstName" />
+                    <RadzenRequiredValidator Text="First Name is required" Component="firstName" Popup="true" />
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Title="Last Name" Property="Last_Name" TextAlign="TextAlign.Center">
+                <EditTemplate Context="context">
+                    <RadzenTextBox @bind-Value="context.Last_Name" Placeholder="Enter Last Name..." Name="lastName" />
+                    <RadzenRequiredValidator Text="Last Name is required" Component="lastName" Popup="true" />
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Title="Semester" Property="Semester" TextAlign="TextAlign.Center">
+                <EditTemplate Context="context">
+                    <RadzenNumeric @bind-Value="context.Semester" Placeholder="Enter Semester..." Name="semester" />
+                    <RadzenRequiredValidator Text="Semester is required" Component="semester" Popup="true" />
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn>
+                <Template Context="context">
+                    <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(context))" />
+                    <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Click=@(args=>RemoveStudent(context)) />
+                </Template>
+                <EditTemplate Context="context">
+                    <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Click=@(args=>SaveStudent(context)) />
+                    <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" Size="ButtonSize.Medium" class="rz-my-1 rz-ms-1" Click="@((args) => CancelEdit(context))" aria-label="Cancel" />
+                </EditTemplate>
+            </RadzenDataGridColumn>
         </Columns>
     </RadzenDataGrid>
 </RadzenCard>
 
 @code {
+    private RadzenDataGrid<StudentDTO> grid;
     private int studentId;
+    private bool createFlag = false;
     List<StudentDTO> students = new();
 
     public void SearchStudentById()
     {
-         Navigation.NavigateTo($"/student/{studentId}");
+        Navigation.NavigateTo($"/student/{studentId}");
     }
 
     protected override async Task OnInitializedAsync()
-    {
+    {        
         students = await StudentService.GetAllStudents();
     }
 
+    async Task AddNewStudent()
+    {
+        Navigation.NavigateTo($"/create");
+        //createFlag = true;
+        //var student = new StudentDTO();
+        //students.Add(new StudentDTO());
+        //await grid.InsertRow(student);
+        //grid.Reload();
+    }
+
+    async Task RemoveStudent(StudentDTO student)
+    {
+        await StudentService.DeleteStudent(student.Id);
+        students.Remove(student);
+        grid.CancelEditRow(student);
+        await grid.Reload();
+    }
+
+    async Task SaveStudent(StudentDTO student)
+    {
+        if (createFlag is false)
+        {
+            var newStudent = new StudentDTO();
+            await StudentService.UpdateStudent(student.Id, student);
+            //newStudent = await StudentService.CreateStudent(student);
+            students.Add(newStudent);
+            await grid.UpdateRow(student);
+            await grid.Reload();
+        }
+        else
+        {
+            var newStudent = new StudentDTO();
+            await StudentService.CreateStudent(student);
+            students.Add(newStudent);
+            await grid.Reload();
+            createFlag = false;
+        }
+
+    }
+
+    async Task EditRow(StudentDTO student)
+    {
+        await grid.EditRow(student);
+        await grid.Reload();
+    }
+
+    async Task CancelEdit(StudentDTO student)
+    {
+        grid.CancelEditRow(student);
+        grid.Reload();
+    }
 }

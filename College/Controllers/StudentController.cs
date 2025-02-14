@@ -57,7 +57,7 @@ namespace College.Controllers
         /// </summary>
         /// <param name="studentDTO"></param>
         /// <returns></returns>
-        [HttpPost("students")]
+        [HttpPost("student")]
         public async Task<IActionResult> CreateStudent([FromBody] StudentDTO studentDTO)
         {            
             var new_student = await _studentService.CreateStudent(studentDTO);

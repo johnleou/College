@@ -25,7 +25,10 @@
         <RadzenText>There is no student with such id</RadzenText>
     }
     <RadzenStack AlignItems="AlignItems.End">
-        <RadzenButton Text="Back" Click="NavigateToStudents" />
+        <div>
+            <RadzenButton Text="Delete" ButtonStyle="ButtonStyle.Danger" Click="DeleteStudent" />
+            <RadzenButton Text="Back" Click="NavigateToStudents" />
+        </div>        
     </RadzenStack>
 </RadzenCard>
 
@@ -42,6 +45,12 @@
     public void NavigateToStudents()
     {
         Navigation.NavigateTo("");
+    }
+
+    public void DeleteStudent()
+    {
+        StudentService.DeleteStudent(studentId);
+        NavigateToStudents();
     }
 
     protected override async Task OnInitializedAsync()
